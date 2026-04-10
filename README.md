@@ -1,40 +1,51 @@
 # zsh-codex-workflow
 
-A lightweight zsh plugin for Codex + tmux workflows on remote servers.
+A lightweight zsh plugin for `codex + zellij` workflows on remote servers.
 
-## Features
+## What It Does
 
-- `dev <dir>`: project mode (one tmux session per directory)
-- `cx [dir]`: temporary mode (always reuse one shared session)
-- `cwa [dir]`: smart mode (`git repo -> dev`, `non-git dir -> cx`)
-- auto-resolve same-name project collisions (`project`, `project-2`, ...)
-- each new session is bootstrapped with split panes:
-  - top pane: normal shell
-  - bottom pane: auto-start `codex`
-- auto-configure tmux titles for iTerm2 tab display (default compact: `session | basename(path)`)
-- `cxx`: reset temporary session
-- `cwl`: list tmux sessions with path
+The plugin gives you two fast entry modes:
+
+- project sessions: one zellij session per project directory
+- temporary session: one reusable scratch session
+
+Each new session starts with a fixed two-pane layout:
+
+- top pane: shell in the target directory
+- bottom pane: `codex` in the same directory
+
+The main goal is fast multi-project switching without manually rebuilding the same workspace layout every time.
+
+## Commands
+
+- `pj <dir>`: enter or create a project zellij session for a directory
+- `px [dir]`: enter or create the shared temporary zellij session
+- `pjs`: list known project sessions and directories
+- `pjp`: choose a known project session from a picker command
+- `pxr`: reset the shared temporary session
 
 ## Requirements
 
 - `zsh`
-- `tmux`
+- `zellij`
 - `codex` in `PATH`
-- `git`
+- optional picker command for `pjp`
+  - default: `fzf`
+  - override with `CODEX_WORKFLOW_PICKER`
 
-## Install (Oh My Zsh)
+## Install
 
 ```bash
 git clone <your-repo-url> ~/.oh-my-zsh/custom/plugins/codex-workflow
 ```
 
-Add plugin name in `~/.zshrc`:
+In `~/.zshrc`:
 
 ```bash
 plugins=(... codex-workflow)
 ```
 
-Reload shell:
+Reload your shell:
 
 ```bash
 source ~/.zshrc
@@ -42,51 +53,59 @@ source ~/.zshrc
 
 ## Usage
 
+Open or create a project session:
+
 ```bash
-dev ~/workspace/project-a
-cwa ~/workspace/project-a/subdir
-cwa ~/tmp/some-folder
-cx
-cx ~/tmp/some-folder
-cxx
-cwl
+pj ~/workspace/project-a
 ```
 
-## Optional config
+Open or create the shared temporary session:
 
-Set temporary session name before plugin loads:
+```bash
+px
+px ~/tmp/scratch-dir
+```
+
+List known project sessions:
+
+```bash
+pjs
+```
+
+Pick and enter a known project session:
+
+```bash
+pjp
+```
+
+Reset the shared temporary session:
+
+```bash
+pxr
+```
+
+## Configuration
+
+Temporary session name:
 
 ```bash
 export CODEX_WORKFLOW_TEMP_SESSION="codex-temp"
 ```
 
-Smart mode options:
+State directory for project metadata and generated zellij layouts:
 
 ```bash
-# cwa in git repo uses repo root by default (1). Set 0 to use current dir.
-export CODEX_WORKFLOW_SMART_REPO_ROOT=1
-
-# session naming:
-# basename (default): project
-# parent_basename: parent_project (useful for same-name folders)
-export CODEX_WORKFLOW_SESSION_NAME_MODE="basename"
+export CODEX_WORKFLOW_STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/codex-workflow"
 ```
 
-Title options:
+Picker command used by `pjp`:
 
 ```bash
-# 1 = enable tmux title integration for iTerm2 tabs (default), 0 = disable
-export CODEX_WORKFLOW_ITERM_TITLE=1
-
-# title mode:
-# compact (default): session | current-dir-name
-# full: session | full-path
-# session: session only
-export CODEX_WORKFLOW_TITLE_MODE="compact"
+export CODEX_WORKFLOW_PICKER="fzf"
 ```
 
 ## Notes
 
-- Run commands on the remote Ubuntu host (inside your SSH session).
-- iTerm2 on macOS is only the terminal UI; tmux sessions live on the remote host.
-- In iTerm2, tab title should include terminal title to display tmux-provided project/path.
+- The plugin is now zellij-first. The old tmux-oriented command model is no longer the primary workflow.
+- Project session names are derived from directory names and get numeric suffixes when collisions occur.
+- The temporary session is intentionally not repointed automatically. Use `pxr` before `px <dir>` when you want a fresh scratch context.

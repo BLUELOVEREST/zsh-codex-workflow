@@ -1,4 +1,32 @@
 #!/usr/bin/env zsh
 set -euo pipefail
 
-print -- "$*" >> "${CW_ZELLIJ_LOG:?}"
+state_file="${CW_ZELLIJ_STATE:?}"
+log_file="${CW_ZELLIJ_LOG:?}"
+mkdir -p "${state_file:h}"
+touch "$state_file"
+
+cmd="${1:-}"
+
+case "$cmd" in
+  list-sessions)
+    cat "$state_file"
+    ;;
+  attach)
+    print -- "$*" >> "$log_file"
+    ;;
+  delete-session)
+    print -- "$*" >> "$log_file"
+    session="${2:-}"
+    grep -Fxv -- "$session" "$state_file" > "${state_file}.tmp" || true
+    mv "${state_file}.tmp" "$state_file"
+    ;;
+  --session)
+    print -- "$*" >> "$log_file"
+    session="${2:-}"
+    grep -Fxq -- "$session" "$state_file" || print -- "$session" >> "$state_file"
+    ;;
+  *)
+    print -- "$*" >> "$log_file"
+    ;;
+esac
