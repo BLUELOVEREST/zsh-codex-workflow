@@ -29,9 +29,30 @@
 - `zsh`
 - `zellij`
 - `codex` 在 `PATH` 中
-- `pjp` 可选依赖选择器命令
-  - 默认：`fzf`
-  - 可通过 `CODEX_WORKFLOW_PICKER` 覆盖
+- `fzf`：`pjp` 默认使用的项目选择器
+
+如果你使用 Ubuntu/Debian，可以这样安装基础依赖：
+
+```bash
+sudo apt update
+sudo apt install zsh fzf
+```
+
+`zellij` 建议使用官方 release 或 Cargo 安装，避免系统包版本过旧：
+
+```bash
+cargo install --locked zellij
+```
+
+确认命令可用：
+
+```bash
+zellij --version
+codex --version
+fzf --version
+```
+
+如果不想使用 `fzf`，可以通过 `CODEX_WORKFLOW_PICKER` 换成其他选择器。
 
 ## 安装
 
