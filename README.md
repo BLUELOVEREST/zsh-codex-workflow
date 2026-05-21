@@ -1,111 +1,113 @@
 # zsh-codex-workflow
 
-A lightweight zsh plugin for `codex + zellij` workflows on remote servers.
+一个用于远程服务器上的 `codex + zellij` 工作流的轻量 zsh 插件。
 
-## What It Does
+## 这个插件做什么
 
-The plugin gives you two fast entry modes:
+这个插件提供两种快速入口：
 
-- project sessions: one zellij session per project directory
-- temporary session: one reusable scratch session
+- 项目会话：每个项目目录对应一个独立的 zellij session
+- 临时会话：一个可复用的临时 scratch session
 
-Each new session starts with a fixed two-pane layout:
+每个新 session 默认都会创建固定的上下双 pane 布局：
 
-- top pane: shell in the target directory
-- bottom pane: `codex` in the same directory
+- 上方 pane：位于目标目录的普通 shell
+- 下方 pane：位于同一目录并自动启动的 `codex`
 
-The main goal is fast multi-project switching without manually rebuilding the same workspace layout every time.
+它的主要目标是让多项目切换更快，不需要每次手动重建同样的 zellij 布局。
 
-## Commands
+## 命令
 
-- `pj <dir>`: enter or create a project zellij session for a directory
-- `px [dir]`: enter or create the shared temporary zellij session
-- `pjs`: list known project sessions and directories
-- `pjp`: choose a known project session from a picker command
-- `pxr`: reset the shared temporary session
+- `pj <dir>`：进入或创建某个目录对应的项目 zellij session
+- `px [dir]`：进入或创建共享的临时 zellij session
+- `pjs`：列出已知项目 session 和对应目录
+- `pjp`：通过选择器进入某个已知项目 session
+- `pxr`：重置共享临时 session
 
-## Requirements
+## 依赖
 
 - `zsh`
 - `zellij`
-- `codex` in `PATH`
-- optional picker command for `pjp`
-  - default: `fzf`
-  - override with `CODEX_WORKFLOW_PICKER`
+- `codex` 在 `PATH` 中
+- `pjp` 可选依赖选择器命令
+  - 默认：`fzf`
+  - 可通过 `CODEX_WORKFLOW_PICKER` 覆盖
 
-## Install
+## 安装
+
+克隆到 Oh My Zsh 的自定义插件目录：
 
 ```bash
-git clone <your-repo-url> ~/.oh-my-zsh/custom/plugins/codex-workflow
+git clone git@github.com:BLUELOVEREST/zsh-codex-workflow.git ~/.oh-my-zsh/custom/plugins/codex-workflow
 ```
 
-In `~/.zshrc`:
+在 `~/.zshrc` 中启用插件：
 
 ```bash
 plugins=(... codex-workflow)
 ```
 
-Reload your shell:
+重新加载 shell：
 
 ```bash
 source ~/.zshrc
 ```
 
-## Usage
+## 使用
 
-Open or create a project session:
+打开或创建一个项目 session：
 
 ```bash
 pj ~/workspace/project-a
 ```
 
-Open or create the shared temporary session:
+打开或创建共享临时 session：
 
 ```bash
 px
 px ~/tmp/scratch-dir
 ```
 
-List known project sessions:
+列出已知项目 session：
 
 ```bash
 pjs
 ```
 
-Pick and enter a known project session:
+通过选择器进入某个已知项目 session：
 
 ```bash
 pjp
 ```
 
-Reset the shared temporary session:
+重置共享临时 session：
 
 ```bash
 pxr
 ```
 
-## Configuration
+## 配置
 
-Temporary session name:
+临时 session 名称：
 
 ```bash
 export CODEX_WORKFLOW_TEMP_SESSION="codex-temp"
 ```
 
-State directory for project metadata and generated zellij layouts:
+项目元数据和生成的 zellij layout 存放目录：
 
 ```bash
 export CODEX_WORKFLOW_STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/codex-workflow"
 ```
 
-Picker command used by `pjp`:
+`pjp` 使用的选择器命令：
 
 ```bash
 export CODEX_WORKFLOW_PICKER="fzf"
 ```
 
-## Notes
+## 注意事项
 
-- The plugin is now zellij-first. The old tmux-oriented command model is no longer the primary workflow.
-- Project session names are derived from directory names and get numeric suffixes when collisions occur.
-- The temporary session is intentionally not repointed automatically. Use `pxr` before `px <dir>` when you want a fresh scratch context.
+- 这个插件是 zellij-first 的工作流，旧的 tmux 命令模型不再是主要使用方式。
+- 项目 session 名称会从目录名生成；如果同名目录冲突，会自动追加数字后缀。
+- 临时 session 不会自动切换到新目录。如果想用新目录重新创建临时上下文，先执行 `pxr`，再执行 `px <dir>`。
