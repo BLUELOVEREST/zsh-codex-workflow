@@ -157,7 +157,7 @@ _cw_attach_session() {
   local session="$1"
   local kind="$2"
   _cw_log_action "action=attach-${kind}-session session=$session"
-  zellij attach "$session" --create-background=false
+  zellij attach "$session"
 }
 
 pj() {

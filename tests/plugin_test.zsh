@@ -116,6 +116,8 @@ run_test_pjp_routes_selected_session_into_pj() {
   pjp
 
   grep -q "action=attach-project-session" "$CW_ZELLIJ_LOG" || _fail "pjp should route through pj"
+  grep -q "^attach api$" "$CW_ZELLIJ_LOG" || _fail "pjp should attach existing zellij session without boolean flag values"
+  ! grep -q -- "--create-background=false" "$CW_ZELLIJ_LOG" || _fail "zellij attach should not pass a value to --create-background"
 }
 
 run_test_pjs_lists_saved_session_paths() {
