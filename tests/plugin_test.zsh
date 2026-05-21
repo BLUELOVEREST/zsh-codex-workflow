@@ -75,6 +75,8 @@ run_test_pj_creates_layout_for_new_project() {
   [[ -f "$CW_ZELLIJ_LOG" ]] || _fail "zellij invocation log should exist"
   grep -q "action=new-project-session" "$CW_ZELLIJ_LOG" || _fail "pj should create a new project session"
   grep -q "cwd=$workspace/project" "$CW_ZELLIJ_LOG" || _fail "pj should create the session in the project directory"
+  grep -q -- "--new-session-with-layout" "$CW_ZELLIJ_LOG" || _fail "pj should force a new zellij session with the generated layout"
+  grep -q -- "--session project" "$CW_ZELLIJ_LOG" || _fail "pj should name the new zellij session"
 }
 
 run_test_px_requires_reset_for_new_directory() {
@@ -153,11 +155,12 @@ run_test_pxr_deletes_temp_session() {
 }
 
 run_test_requires_zellij_and_codex() {
-  export PATH="$ROOT/tests/fixtures/no-zellij:$SYSTEM_PATH"
+  export PATH="$SYSTEM_PATH"
   local workspace="$TMP_ROOT/require-cmd"
   rm -rf "$workspace"
   mkdir -p "$workspace/project"
 
+  export PATH="$ROOT/tests/fixtures/no-zellij"
   export CODEX_WORKFLOW_STATE_DIR="$workspace/state"
 
   source "$PLUGIN_FILE"

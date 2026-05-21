@@ -136,7 +136,7 @@ _cw_log_action() {
 }
 
 _cw_list_sessions() {
-  zellij list-sessions 2>/dev/null
+  zellij list-sessions --short --no-formatting 2>/dev/null
 }
 
 _cw_has_session() {
@@ -150,7 +150,7 @@ _cw_create_session() {
   local kind="$3"
   _cw_write_layout "$session" "$dir"
   _cw_log_action "action=new-${kind}-session session=$session cwd=$dir"
-  zellij --session "$session" --layout "$(_cw_layout_file_for_session "$session")"
+  zellij --session "$session" --new-session-with-layout "$(_cw_layout_file_for_session "$session")"
 }
 
 _cw_attach_session() {
