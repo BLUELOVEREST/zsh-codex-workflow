@@ -121,7 +121,7 @@ _cw_write_layout() {
   cat > "$layout" <<EOF
 layout {
     tab name="$session" cwd="$dir" {
-        pane split_direction="vertical" {
+        pane split_direction="horizontal" {
             pane cwd="$dir"
             pane cwd="$dir" command="codex"
         }

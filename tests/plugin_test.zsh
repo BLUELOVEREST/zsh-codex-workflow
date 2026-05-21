@@ -77,6 +77,7 @@ run_test_pj_creates_layout_for_new_project() {
   grep -q "cwd=$workspace/project" "$CW_ZELLIJ_LOG" || _fail "pj should create the session in the project directory"
   grep -q -- "--new-session-with-layout" "$CW_ZELLIJ_LOG" || _fail "pj should force a new zellij session with the generated layout"
   grep -q -- "--session project" "$CW_ZELLIJ_LOG" || _fail "pj should name the new zellij session"
+  grep -q 'split_direction="horizontal"' "$workspace/state/project.kdl" || _fail "project layout should split panes top and bottom"
 }
 
 run_test_px_requires_reset_for_new_directory() {
