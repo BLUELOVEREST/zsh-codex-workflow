@@ -4,6 +4,7 @@
 : "${CODEX_WORKFLOW_TEMP_SESSION:=codex-temp}"
 : "${CODEX_WORKFLOW_STATE_DIR:=${XDG_STATE_HOME:-$HOME/.local/state}/codex-workflow}"
 : "${CODEX_WORKFLOW_PICKER:=fzf}"
+: "${CODEX_WORKFLOW_CODEX_NO_ALT_SCREEN:=1}"
 
 typeset -gA _CW_SESSION_PATHS
 
@@ -116,14 +117,23 @@ _cw_write_layout() {
   local session="$1"
   local dir="$2"
   local layout
+  local codex_pane
   layout="$(_cw_layout_file_for_session "$session")"
+
+  if [[ "$CODEX_WORKFLOW_CODEX_NO_ALT_SCREEN" = "1" ]]; then
+    codex_pane='            pane cwd="'"$dir"'" command="codex" {
+                args "--no-alt-screen"
+            }'
+  else
+    codex_pane='            pane cwd="'"$dir"'" command="codex"'
+  fi
 
   cat > "$layout" <<EOF
 layout {
     tab name="$session" cwd="$dir" {
         pane split_direction="horizontal" {
             pane cwd="$dir"
-            pane cwd="$dir" command="codex"
+$codex_pane
         }
     }
 }

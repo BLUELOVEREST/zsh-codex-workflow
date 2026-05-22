@@ -127,6 +127,12 @@ export CODEX_WORKFLOW_STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/codex-wor
 export CODEX_WORKFLOW_PICKER="fzf"
 ```
 
+Codex pane 默认会使用 `codex --no-alt-screen`，以减少 zellij 中 TUI/滚动/输入相关问题。如果你想恢复 Codex 默认的 alternate screen 模式：
+
+```bash
+export CODEX_WORKFLOW_CODEX_NO_ALT_SCREEN=0
+```
+
 ## 注意事项
 
 - 这个插件是 zellij-first 的工作流，旧的 tmux 命令模型不再是主要使用方式。
